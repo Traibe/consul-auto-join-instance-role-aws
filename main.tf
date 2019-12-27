@@ -3,7 +3,7 @@ terraform {
 }
 
 data "aws_iam_policy_document" "assume_role" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
@@ -16,13 +16,13 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "consul" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
   name_prefix        = "${var.name}-"
   assume_role_policy = data.aws_iam_policy_document.assume_role[count.index].json
 }
 
 data "aws_iam_policy_document" "consul" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
   statement {
     sid       = "AllowSelfAssembly"
     effect    = "Allow"
@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "consul" {
 }
 
 resource "aws_iam_role_policy" "consul" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
 
   name_prefix = "${var.name}-"
   role        = aws_iam_role.consul[count.index].id
@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "consul" {
 }
 
 resource "aws_iam_instance_profile" "consul" {
-  count = var.create ? 1 : 0
+  count = var.create == true ? 1 : 0
 
   name_prefix = "${var.name}-"
   role        = aws_iam_role.consul[count.index].name
